@@ -1,0 +1,32 @@
+package com.example.express
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.example.express.databinding.ItemProductBinding
+import com.example.express.model.Product
+
+class ProductAdapter(
+    private val products: List<Product>,
+    private val onAddClick: (Product) -> Unit
+) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+
+    class ViewHolder(private val binding: ItemProductBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(product: Product, onAddClick: (Product) -> Unit) {
+            binding.productName.text = product.name
+            binding.productPrice.text = "${product.price} ₽"
+            binding.addButton.setOnClickListener { onAddClick(product) }
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(products[position], onAddClick)
+    }
+
+    override fun getItemCount() = products.size
+}
