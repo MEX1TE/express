@@ -7,15 +7,16 @@ import com.example.express.databinding.ItemProductBinding
 import com.example.express.model.Product
 
 class ProductAdapter(
-    private val products: List<Product>,
+    private var products: List<Product>,
     private val onAddClick: (Product) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
     class ViewHolder(private val binding: ItemProductBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: Product, onAddClick: (Product) -> Unit) {
             binding.productName.text = product.name
-            binding.productPrice.text = "${product.price} ₽"
+            binding.productPrice.text = "${String.format("%.2f", product.price)} ₽"
             binding.addButton.setOnClickListener { onAddClick(product) }
+            binding.productImage.setImageResource(R.drawable.ic_placeholder)
         }
     }
 
@@ -29,4 +30,9 @@ class ProductAdapter(
     }
 
     override fun getItemCount() = products.size
+
+    fun updateProducts(newProducts: List<Product>) {
+        products = newProducts
+        notifyDataSetChanged()
+    }
 }

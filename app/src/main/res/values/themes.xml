@@ -1,10 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Определяем тему Theme.Express -->
-    <style name="Theme.Express" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Настраиваем основные цвета -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/surface</item>
+        <item name="android:statusBarColor">@color/primary_variant</item>
+        <item name="android:windowBackground">@color/background</item>
+    </style>
+
+    <style name="CardStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+        <item name="cardBackgroundColor">@color/surface</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:backgroundTint">@color/accent</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:textColor">@color/surface</item>
+    </style>
+
+    <style name="TextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@color/surface</item>
+        <item name="hintTextColor">@color/text_secondary</item>
+        <item name="android:textColorHint">@color/text_secondary</item>
     </style>
 </resources>

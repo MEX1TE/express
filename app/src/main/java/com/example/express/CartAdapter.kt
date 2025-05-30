@@ -1,18 +1,22 @@
 package com.example.express
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.express.databinding.ItemCartBinding
 import com.example.express.model.CartItem
 
-class CartAdapter(private val items: List<CartItem>) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
+class CartAdapter(
+    private var cartItems: List<CartItem>
+) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
     class ViewHolder(private val binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: CartItem) {
-            binding.cartItemName.text = item.product.name
-            binding.cartItemQuantity.text = "x${item.quantity}"
-            binding.cartItemPrice.text = "${item.product.price * item.quantity} ₽"
+        fun bind(cartItem: CartItem) {
+            binding.cartItemName.text = cartItem.product.name
+            binding.cartItemQuantity.text = "x${cartItem.quantity}"
+            binding.cartItemPrice.text = "${String.format("%.2f", cartItem.product.price * cartItem.quantity)} ₽"
+            Log.d("CartAdapter", "Binding item: ${cartItem.product.name}, quantity: ${cartItem.quantity}")
         }
     }
 
@@ -22,8 +26,14 @@ class CartAdapter(private val items: List<CartItem>) : RecyclerView.Adapter<Cart
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(cartItems[position])
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount() = cartItems.size
+
+    fun updateCart(newCartItems: List<CartItem>) {
+        cartItems = newCartItems
+        notifyDataSetChanged()
+        Log.d("CartAdapter", "Cart updated with ${newCartItems.size} items")
+    }
 }
