@@ -1,8 +1,11 @@
 package com.example.express.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Product(
-    val id: Int,
-    val name: String,
-    val price: Double,
-    val description: String? = null
+    @SerializedName("id") val id: Int,
+    @SerializedName("name") val name: String,
+    @SerializedName("price") val price: Double,
+    @SerializedName("description") val description: String?,
+    @SerializedName("image_url") val imageUrl: String?
 )

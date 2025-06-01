@@ -1,5 +1,6 @@
 package com.example.express.network
 
+import com.example.express.model.Credentials
 import com.example.express.model.Order
 import com.example.express.model.Product
 import retrofit2.http.Body
@@ -14,7 +15,7 @@ interface ApiService {
     suspend fun placeOrder(@Body order: Order): Order
 
     @POST("register")
-    suspend fun register(@Body credentials: Credentials): Map<String, String>
+    suspend fun register(@Body credentials: com.example.express.model.Credentials): Map<String, String>
 
     @POST("login")
     suspend fun login(@Body credentials: Credentials): Map<String, String>

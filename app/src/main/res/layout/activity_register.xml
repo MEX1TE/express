@@ -8,7 +8,7 @@
     android:background="@color/background">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/login_card"
+        android:id="@+id/register_card"
         style="@style/CardStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,10 +23,10 @@
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/login_title"
+                android:id="@+id/register_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Вход"
+                android:text="Регистрация"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Имя пользователя"
-                app:layout_constraintTop_toBottomOf="@id/login_title"
+                app:layout_constraintTop_toBottomOf="@id/register_title"
                 android:layout_marginBottom="8dp">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Пароль"
                 app:layout_constraintTop_toBottomOf="@id/username_layout"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="8dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/passwordEditText"
@@ -66,22 +66,70 @@
                     android:inputType="textPassword"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/loginButton"
-                style="@style/ButtonStyle"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phone_layout"
+                style="@style/TextInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Войти"
+                android:hint="Номер телефона"
                 app:layout_constraintTop_toBottomOf="@id/password_layout"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/phoneEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/email_layout"
+                style="@style/TextInputStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Электронная почта"
+                app:layout_constraintTop_toBottomOf="@id/phone_layout"
+                android:layout_marginBottom="8dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/emailEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textEmailAddress"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/name_layout"
+                style="@style/TextInputStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Имя"
+                app:layout_constraintTop_toBottomOf="@id/email_layout"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPersonName"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/registerButton"
                 style="@style/ButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Регистрация"
-                app:layout_constraintTop_toBottomOf="@id/loginButton"
+                android:text="Зарегистрироваться"
+                app:layout_constraintTop_toBottomOf="@id/name_layout"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/backToLoginButton"
+                style="@style/ButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Назад"
+                app:layout_constraintTop_toBottomOf="@id/registerButton"
                 android:layout_marginBottom="8dp"/>
 
             <TextView
@@ -90,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
-                app:layout_constraintTop_toBottomOf="@id/registerButton"/>
+                app:layout_constraintTop_toBottomOf="@id/backToLoginButton"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
