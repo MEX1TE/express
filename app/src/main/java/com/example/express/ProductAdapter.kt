@@ -17,7 +17,7 @@ class ProductAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(product: Product) {
             binding.productName.text = product.name
-            binding.productPrice.text = "${product.price} BGN"
+            binding.productPrice.text = "${product.price} ₽"
             binding.productDescription.text = product.description ?: "Без описания"
 
             // Загрузка изображения с помощью Glide
