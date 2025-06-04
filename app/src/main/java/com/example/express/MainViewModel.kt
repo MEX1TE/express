@@ -68,8 +68,15 @@ class MainViewModel : ViewModel() {
     fun loadProducts(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = ApiClient.getApiService(context).getProducts()
-                _products.postValue(response)
+                // Получаем список продуктов от ApiService
+                val productListResponse = ApiClient.getApiService(context).getProducts()
+
+                // Логируем полученный список продуктов
+                Log.d("MainViewModel", "Products received from API: $productListResponse")
+
+                // Постим результат в LiveData
+                _products.postValue(productListResponse)
+
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error loading products", e)
                 _status.postValue("Ошибка загрузки продуктов: ${e.message}")

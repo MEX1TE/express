@@ -42,12 +42,14 @@ class CartViewModel(private val context: Context) : ViewModel() {
 
     private fun loadProducts() {
         viewModelScope.launch {
+            Log.d("CartViewModel", "Calling API to get products")
             try {
-                _products.postValue(ApiClient.getApiService(context).getProducts())
-                Log.d("CartViewModel", "Products loaded: ${_products.value}")
+                val productListFromApi = ApiClient.getApiService(context).getProducts()
+                Log.d("CartViewModel", "Products received from API (parsed by Gson): $productListFromApi")
+                _products.postValue(productListFromApi)
             } catch (e: Exception) {
                 _orderStatus.postValue("Ошибка загрузки продуктов: ${e.message}")
-                Log.e("CartViewModel", "Error loading products: ${e.message}")
+                Log.e("CartViewModel", "Error loading products (after Gson parsing attempt): ${e.message}", e)
             }
         }
     }
