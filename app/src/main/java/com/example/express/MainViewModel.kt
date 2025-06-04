@@ -6,12 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.express.model.Address
 import com.example.express.model.CartItem
-import com.example.express.model.Order
 import com.example.express.model.Product
+import com.example.express.model.OrderHistoryEntry
+import com.example.express.model.OrderCreateRequest
+import com.example.express.model.CartItemRequest
 import com.example.express.network.ApiClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.util.Log // Для логирования
 
 class MainViewModel : ViewModel() {
     private val _products = MutableLiveData<List<Product>>()
@@ -23,8 +26,43 @@ class MainViewModel : ViewModel() {
     private val _status = MutableLiveData<String>()
     val status: LiveData<String> = _status
 
+    private val _orderHistory = MutableLiveData<List<OrderHistoryEntry>>()
+    val orderHistory: LiveData<List<OrderHistoryEntry>> = _orderHistory
+
+    private val _orderHistoryError = MutableLiveData<String?>() // Сделаем nullable для сброса ошибки
+    val orderHistoryError: LiveData<String?> = _orderHistoryError
+
     init {
         _cart.value = emptyList()
+    }
+
+    // Функция getUserAuthToken больше не нужна для этих операций
+    /*
+    private fun getUserAuthToken(context: Context): String? {
+        val sharedPreferences = context.getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE)
+        val token = sharedPreferences.getString("AUTH_TOKEN", null)
+        return if (token != null) "Bearer $token" else null
+    }
+    */
+
+    fun fetchOrderHistory(context: Context) {
+        CoroutineScope(Dispatchers.IO).launch {
+            // val token = getUserAuthToken(context) // Токен больше не нужен
+            // if (token == null) { // Проверка токена больше не нужна
+            //     _orderHistoryError.postValue("Токен авторизации не найден.")
+            //     return@launch
+            // }
+
+            try {
+                // Вызываем getOrderHistory без токена
+                val history = ApiClient.getApiService(context).getOrderHistory()
+                _orderHistory.postValue(history)
+                _orderHistoryError.postValue(null) // Сбрасываем ошибку при успехе
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error fetching order history", e)
+                _orderHistoryError.postValue("Ошибка загрузки истории заказов: ${e.message}")
+            }
+        }
     }
 
     fun loadProducts(context: Context) {
@@ -33,6 +71,7 @@ class MainViewModel : ViewModel() {
                 val response = ApiClient.getApiService(context).getProducts()
                 _products.postValue(response)
             } catch (e: Exception) {
+                Log.e("MainViewModel", "Error loading products", e)
                 _status.postValue("Ошибка загрузки продуктов: ${e.message}")
             }
         }
@@ -50,19 +89,36 @@ class MainViewModel : ViewModel() {
     }
 
     fun placeOrder(context: Context, address: Address) {
-        val cartItems = _cart.value ?: return
-        if (cartItems.isEmpty()) {
-            _status.value = "Корзина пуста"
+        // val token = getUserAuthToken(context) // Токен больше не нужен
+        // if (token == null) { // Проверка токена больше не нужна
+        //     _status.postValue("Ошибка авторизации: не удалось получить токен.")
+        //     return
+        // }
+
+        val currentCartItems = _cart.value ?: return
+        if (currentCartItems.isEmpty()) {
+            _status.postValue("Корзина пуста")
             return
         }
-        val total = cartItems.sumOf { it.product.price * it.quantity }
-        val order = Order(cartItems, address.toString(), total)
+
+        val orderItemsRequest = currentCartItems.map {
+            CartItemRequest(productId = it.product.id, quantity = it.quantity)
+        }
+        val total = currentCartItems.sumOf { it.product.price * it.quantity }
+        val orderRequest = OrderCreateRequest(
+            address = address.toFormattedString(),
+            total = total,
+            items = orderItemsRequest
+        )
+
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                ApiClient.getApiService(context).placeOrder(order)
+                // Вызываем placeOrder без токена
+                ApiClient.getApiService(context).placeOrder(orderRequest)
                 _cart.postValue(emptyList())
                 _status.postValue("Заказ успешно оформлен")
             } catch (e: Exception) {
+                Log.e("MainViewModel", "Error placing order", e)
                 _status.postValue("Ошибка при оформлении заказа: ${e.message}")
             }
         }

@@ -41,5 +41,8 @@
             android:exported="false"
             android:label="Корзина"
             android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".OrderHistoryActivity"
+            android:label="История заказов" />
     </application>
 </manifest>

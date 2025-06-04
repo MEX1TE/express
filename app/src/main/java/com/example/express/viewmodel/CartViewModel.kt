@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.express.model.CartItem
 import com.example.express.model.Order
 import com.example.express.model.Product
+import com.example.express.model.OrderCreateRequest
+import com.example.express.model.CartItemRequest
 import com.example.express.network.ApiClient
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.launch
@@ -41,10 +43,10 @@ class CartViewModel(private val context: Context) : ViewModel() {
     private fun loadProducts() {
         viewModelScope.launch {
             try {
-                _products.value = ApiClient.getApiService(context).getProducts()
+                _products.postValue(ApiClient.getApiService(context).getProducts())
                 Log.d("CartViewModel", "Products loaded: ${_products.value}")
             } catch (e: Exception) {
-                _orderStatus.value = "Ошибка загрузки продуктов: ${e.message}"
+                _orderStatus.postValue("Ошибка загрузки продуктов: ${e.message}")
                 Log.e("CartViewModel", "Error loading products: ${e.message}")
             }
         }
@@ -66,19 +68,33 @@ class CartViewModel(private val context: Context) : ViewModel() {
     fun placeOrder(address: String) {
         viewModelScope.launch {
             try {
-                val items = _cartItems.value ?: emptyList()
-                val total = items.sumOf { it.product.price * it.quantity }
-                val order = Order(items, address, total)
-                // Логируем JSON
+                val currentCartItems = _cartItems.value ?: emptyList()
+                if (currentCartItems.isEmpty()) {
+                    _orderStatus.postValue("Корзина пуста")
+                    Log.d("CartViewModel", "Attempted to place order with empty cart")
+                    return@launch
+                }
+
+                val orderItemsRequest = currentCartItems.map {
+                    CartItemRequest(productId = it.product.id, quantity = it.quantity)
+                }
+                val total = currentCartItems.sumOf { it.product.price * it.quantity }
+                val orderRequest = OrderCreateRequest(
+                    address = address,
+                    total = total,
+                    items = orderItemsRequest
+                )
+
                 val gson = GsonBuilder().setPrettyPrinting().create()
-                val orderJson = gson.toJson(order)
+                val orderJson = gson.toJson(orderRequest)
                 Log.d("CartViewModel", "Sending order JSON: \n$orderJson")
-                ApiClient.getApiService(context).placeOrder(order)
-                _orderStatus.value = "Заказ успешно размещен!"
-                _cartItems.value = emptyList()
+
+                ApiClient.getApiService(context).placeOrder(orderRequest)
+                _orderStatus.postValue("Заказ успешно размещен!")
+                _cartItems.postValue(emptyList())
                 Log.d("CartViewModel", "Order placed, cart cleared")
             } catch (e: Exception) {
-                _orderStatus.value = "Ошибка при оформлении заказа: ${e.message}"
+                _orderStatus.postValue("Ошибка при оформлении заказа: ${e.message}")
                 Log.e("CartViewModel", "Error placing order: ${e.message}", e)
             }
         }

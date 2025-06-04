@@ -42,5 +42,11 @@ class MainActivity : AppCompatActivity() {
         binding.cartButton.setOnClickListener {
             startActivity(Intent(this, CartActivity::class.java))
         }
+
+        // Новый обработчик для кнопки "История заказов"
+        binding.buttonOrderHistory.setOnClickListener {
+            val intent = Intent(this, OrderHistoryActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
