@@ -44,9 +44,9 @@ class RegisterActivity : AppCompatActivity() {
     private fun registerUser(credentials: Credentials) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = ApiClient.getApiService(this@RegisterActivity).register(credentials)
+                val response = ApiClient.instance.register(credentials)
                 withContext(Dispatchers.Main) {
-                    binding.statusTextView.text = response["message"]
+                    binding.statusTextView.text = response["message"] ?: ""
                     Log.d("RegisterActivity", "Registration successful: ${response["message"]}")
                     finish() // Возвращаемся к LoginActivity после успешной регистрации
                 }

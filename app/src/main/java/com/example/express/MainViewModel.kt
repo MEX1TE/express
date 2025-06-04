@@ -45,7 +45,7 @@ class MainViewModel : ViewModel() {
     }
     */
 
-    fun fetchOrderHistory(context: Context) {
+    fun fetchOrderHistory(/*context: Context*/) {
         CoroutineScope(Dispatchers.IO).launch {
             // val token = getUserAuthToken(context) // Токен больше не нужен
             // if (token == null) { // Проверка токена больше не нужна
@@ -54,8 +54,8 @@ class MainViewModel : ViewModel() {
             // }
 
             try {
-                // Вызываем getOrderHistory без токена
-                val history = ApiClient.getApiService(context).getOrderHistory()
+                // Вызываем getOrderHistory без токена, используя ApiClient.instance
+                val history = ApiClient.instance.getOrderHistory()
                 _orderHistory.postValue(history)
                 _orderHistoryError.postValue(null) // Сбрасываем ошибку при успехе
             } catch (e: Exception) {
@@ -65,11 +65,11 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun loadProducts(context: Context) {
+    fun loadProducts(/*context: Context*/) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Получаем список продуктов от ApiService
-                val productListResponse = ApiClient.getApiService(context).getProducts()
+                // Получаем список продуктов от ApiService, используя ApiClient.instance
+                val productListResponse = ApiClient.instance.getProducts()
 
                 // Логируем полученный список продуктов
                 Log.d("MainViewModel", "Products received from API: $productListResponse")
@@ -95,7 +95,7 @@ class MainViewModel : ViewModel() {
         _cart.value = currentCart
     }
 
-    fun placeOrder(context: Context, address: Address) {
+    fun placeOrder(/*context: Context,*/ address: Address) {
         // val token = getUserAuthToken(context) // Токен больше не нужен
         // if (token == null) { // Проверка токена больше не нужна
         //     _status.postValue("Ошибка авторизации: не удалось получить токен.")
@@ -120,8 +120,8 @@ class MainViewModel : ViewModel() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Вызываем placeOrder без токена
-                ApiClient.getApiService(context).placeOrder(orderRequest)
+                // Вызываем placeOrder без токена, используя ApiClient.instance
+                ApiClient.instance.placeOrder(orderRequest)
                 _cart.postValue(emptyList())
                 _status.postValue("Заказ успешно оформлен")
             } catch (e: Exception) {

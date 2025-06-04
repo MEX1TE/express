@@ -22,7 +22,7 @@ class CartActivity : AppCompatActivity() {
 
         // Получение ViewModel из Application
         val app = application as ExpressApplication
-        viewModel = ViewModelProvider(app, CartViewModelFactory(applicationContext))
+        viewModel = ViewModelProvider(app, CartViewModelFactory())
             .get(CartViewModel::class.java)
 
         // Настройка RecyclerView для корзины

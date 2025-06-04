@@ -37,8 +37,8 @@ class OrderHistoryActivity : AppCompatActivity() {
         observeViewModel()
 
         // Загрузка истории заказов
-        // Убедитесь, что ваша логика получения токена в MainViewModel.getUserAuthToken() реализована!
-        viewModel.fetchOrderHistory(applicationContext)
+        // Метод fetchOrderHistory() теперь вызывается без аргументов
+        viewModel.fetchOrderHistory()
     }
 
     private fun setupRecyclerView() {

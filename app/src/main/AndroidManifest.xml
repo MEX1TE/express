@@ -44,5 +44,6 @@
         <activity
             android:name=".OrderHistoryActivity"
             android:label="История заказов" />
+        <activity android:name=".ui.RestaurantListActivity" />
     </application>
 </manifest>

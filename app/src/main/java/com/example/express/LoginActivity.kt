@@ -5,8 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.express.databinding.ActivityLoginBinding
-import com.example.express.model.Credentials
+// import com.example.express.model.Credentials // Старый импорт
+import com.example.express.network.Credentials // Новый импорт для логина
 import com.example.express.network.ApiClient
+import com.example.express.ui.RestaurantListActivity // Импорт для RestaurantListActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,30 +32,33 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Для логина отправляем только username и password
+            // Используем com.example.express.network.Credentials для логина
             val credentials = Credentials(
                 username = username,
-                password = password,
-                phone = "", // Пустые значения, так как не требуются для логина
-                email = "",
-                name = ""
+                password = password
+                // phone, email, name здесь не нужны
             )
             loginUser(credentials)
         }
 
         binding.registerButton.setOnClickListener {
+            // Для регистрации, возможно, понадобится com.example.express.model.Credentials
+            // Убедитесь, что RegisterActivity использует правильную модель
             startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
-    private fun loginUser(credentials: Credentials) {
+    private fun loginUser(credentials: Credentials) { // credentials теперь com.example.express.network.Credentials
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val response = ApiClient.getApiService(this@LoginActivity).login(credentials)
+                // Используем ApiClient.instance напрямую
+                val response = ApiClient.instance.login(credentials)
                 withContext(Dispatchers.Main) {
                     binding.statusTextView.text = "Вход успешен"
                     Log.d("LoginActivity", "Login successful: ${response["access_token"]}")
-                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    // Переход на RestaurantListActivity после успешного логина
+                    val intent = Intent(this@LoginActivity, RestaurantListActivity::class.java)
+                    startActivity(intent)
                     finish()
                 }
             } catch (e: Exception) {

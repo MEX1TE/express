@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">express</string>
+    <string name="app_name">Express</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="default_notification_channel_id" translatable="false">express_channel_id</string>
+    <string name="default_notification_channel_name" translatable="true">Express Notifications</string>
+    <string name="action_logout">Выход</string>
+    <string name="restaurant_logo_description">Логотип ресторана</string>
 </resources>

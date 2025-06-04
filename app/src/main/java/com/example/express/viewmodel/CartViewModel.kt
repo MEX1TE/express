@@ -1,6 +1,6 @@
 package com.example.express.viewmodel
 
-import android.content.Context
+// import android.content.Context // Больше не используется здесь
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.express.model.CartItem
-import com.example.express.model.Order
+// import com.example.express.model.Order // Не используется, можно удалить
 import com.example.express.model.Product
 import com.example.express.model.OrderCreateRequest
 import com.example.express.model.CartItemRequest
@@ -16,17 +16,20 @@ import com.example.express.network.ApiClient
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.launch
 
-class CartViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+// context больше не нужен для CartViewModelFactory
+class CartViewModelFactory(/*private val context: Context*/) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CartViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return CartViewModel(context) as T
+            // Создаем CartViewModel без context
+            return CartViewModel(/*context*/) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
 
-class CartViewModel(private val context: Context) : ViewModel() {
+// context больше не нужен для CartViewModel
+class CartViewModel(/*private val context: Context*/) : ViewModel() {
     private val _cartItems = MutableLiveData<List<CartItem>>(emptyList())
     val cartItems: LiveData<List<CartItem>> = _cartItems
 
@@ -37,19 +40,33 @@ class CartViewModel(private val context: Context) : ViewModel() {
     val orderStatus: LiveData<String> = _orderStatus
 
     init {
-        loadProducts()
+        loadProducts() // Загружает все продукты по умолчанию
     }
 
     private fun loadProducts() {
         viewModelScope.launch {
-            Log.d("CartViewModel", "Calling API to get products")
+            Log.d("CartViewModel", "Calling API to get ALL products")
             try {
-                val productListFromApi = ApiClient.getApiService(context).getProducts()
-                Log.d("CartViewModel", "Products received from API (parsed by Gson): $productListFromApi")
+                val productListFromApi = ApiClient.instance.getProducts()
+                Log.d("CartViewModel", "All products received: $productListFromApi")
                 _products.postValue(productListFromApi)
             } catch (e: Exception) {
-                _orderStatus.postValue("Ошибка загрузки продуктов: ${e.message}")
-                Log.e("CartViewModel", "Error loading products (after Gson parsing attempt): ${e.message}", e)
+                _orderStatus.postValue("Ошибка загрузки всех продуктов: ${e.message}")
+                Log.e("CartViewModel", "Error loading all products: ${e.message}", e)
+            }
+        }
+    }
+
+    fun loadProductsForRestaurant(restaurantId: Int) {
+        viewModelScope.launch {
+            Log.d("CartViewModel", "Calling API to get products for restaurant ID: $restaurantId")
+            try {
+                val productListFromApi = ApiClient.instance.getProductsByRestaurant(restaurantId)
+                Log.d("CartViewModel", "Products for restaurant $restaurantId received: $productListFromApi")
+                _products.postValue(productListFromApi)
+            } catch (e: Exception) {
+                _orderStatus.postValue("Ошибка загрузки продуктов для ресторана: ${e.message}")
+                Log.e("CartViewModel", "Error loading products for restaurant $restaurantId: ${e.message}", e)
             }
         }
     }
@@ -91,7 +108,8 @@ class CartViewModel(private val context: Context) : ViewModel() {
                 val orderJson = gson.toJson(orderRequest)
                 Log.d("CartViewModel", "Sending order JSON: \n$orderJson")
 
-                ApiClient.getApiService(context).placeOrder(orderRequest)
+                // Используем ApiClient.instance
+                ApiClient.instance.placeOrder(orderRequest)
                 _orderStatus.postValue("Заказ успешно размещен!")
                 _cartItems.postValue(emptyList())
                 Log.d("CartViewModel", "Order placed, cart cleared")
