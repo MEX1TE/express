@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val RESTAURANT_ID_EXTRA = "restaurant_id"
         // Можно добавить и другие константы для Intent, если понадобятся, например, имя ресторана для заголовка
-        // const val RESTAURANT_NAME_EXTRA = "restaurant_name"
+        const val RESTAURANT_NAME_EXTRA = "restaurant_name"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,10 +34,10 @@ class MainActivity : AppCompatActivity() {
         if (restaurantId != -1) {
             viewModel.loadProductsForRestaurant(restaurantId)
             // Опционально: можно установить заголовок Activity, если передано имя ресторана
-            // val restaurantName = intent.getStringExtra(RESTAURANT_NAME_EXTRA)
-            // if (restaurantName != null) {
-            //     title = restaurantName
-            // }
+            val restaurantName = intent.getStringExtra(RESTAURANT_NAME_EXTRA)
+            if (restaurantName != null) {
+                title = restaurantName
+            }
         } else {
             // Если restaurantId не передан (равен -1), 
             // CartViewModel уже вызвал loadProducts() в своем init блоке для загрузки всех продуктов.
